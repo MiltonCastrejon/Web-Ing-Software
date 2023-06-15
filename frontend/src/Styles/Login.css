@@ -1,0 +1,148 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+.container {
+    background-image: url(../assets/background.jpg);
+     background-size: cover;
+     background-position: center;
+     min-height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   }
+   h1 {
+     margin-bottom: 40px;
+     text_size: 50px;
+   }
+   /*Estilos para card */
+   .card {
+     background-color: rgba(255, 255, 255, 0.5);
+     border-radius: 18px;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+     width: 400px;
+     height: 500px;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     position: relative;
+     backdrop-filter: blur(32px);
+   }
+   .formr {
+     display: flex;
+     flex-direction: column;
+     gap: 7px;
+     position: relative;
+   }
+   /* Estilos para el usuario */
+   .formr .labelName {
+     font-size: 15px;
+     padding-left: 10px;
+     position: absolute;
+     top: 13px;
+     transition: 0.3s;
+     pointer-events: none;
+   }
+   
+   .inputName {
+     width: 200px;
+     height: 45px;
+     border: none;
+     outline: none;
+     padding: 0px 7px;
+     border-radius: 8px;
+     color: #fff;
+     font-size: 15px;
+     background-color: transparent;
+     box-shadow: 3px 3px 10px rgba(0, 0, 0, 1),
+       -1px -1px 6px rgba(255, 255, 255, 0.4);
+   }
+   .inputName:focus {
+     border: 1px solid transparent;
+     color: #fff;
+     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.14),
+       -1px -1px 1px rgba(255, 255, 255, 0.698), inset 3px 3px 10px rgba(0, 0, 0, 0.102),
+       inset -1px -1px 6px rgba(247, 247, 247, 0.279);
+   }
+   .formr .inputName:valid ~ .labelName,
+   .formr .inputName:focus ~ .labelName {
+     transition: 0.3s;
+     padding-left: 2px;
+     transform: translateY(-35px);
+   }
+   
+   .formr .inputName:valid,
+   .formr .inputName:focus {
+     box-shadow:1px 6px 20px rgba(0, 0, 0, 0.087),
+       -1px -1px 6px rgba(255, 255, 255, 0.103), inset 3px 3px 10px rgba(0, 0, 0, 0.457),
+       inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+   }
+   /* Estilos para la password*/
+   .formr .labelPassword {
+     font-size: 15px;
+     padding-left: 10px;
+     position: absolute;
+     top: 90px;
+     transition: 0.3s;
+     pointer-events: none;
+   }
+   .inputPassword {
+     margin-top: 25px;
+     width: 200px;
+     height: 45px;
+     border: none;
+     outline: none;
+     padding: 0px 8px;
+     border-radius: 6px;
+     color: #fff;
+     font-size: 15px;
+     background-color: transparent;
+     box-shadow: 3px 3px 10px rgba(0, 0, 0, 1),
+       -1px -1px 6px rgba(255, 255, 255, 0.4);
+   }
+   .inputPassword:focus {
+    border: 1px solid transparent;
+    color: #fff;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.14),
+      -1px -1px 1px rgba(255, 255, 255, 0.698), inset 3px 3px 10px rgba(0, 0, 0, 0.102),
+      inset -1px -1px 6px rgba(247, 247, 247, 0.279);
+   }
+   .formr .inputPassword:valid ~ .labelPassword,
+   .formr .inputPassword:focus ~ .labelPassword {
+     transition: 0.3s;
+     padding-left: 2px;
+     transform: translateY(-35px);
+   }
+   
+   .formr .inputPassword:valid,
+   .formr .inputPassword:focus {
+    box-shadow:1px 6px 20px rgba(0, 0, 0, 0.087),
+    -1px -1px 6px rgba(255, 255, 255, 0.103), inset 3px 3px 10px rgba(0, 0, 0, 0.457),
+    inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+   }
+   /* Estilos para el boton */
+   .btn {
+     margin-top: 40px;
+     padding: 10px 20px;
+     text-transform: uppercase;
+     border-radius: 8px;
+     font-size: 17px;
+     font-weight: 500;
+     color: #04030380;
+     text-shadow: none;
+     background: transparent;
+     box-shadow: transparent;
+     border: 1px solid #ffffff80;
+     transition: 0.5s ease;
+     user-select: none;
+   }
+   .btn:hover {
+     color: #ffffff;
+     background: #008cff;
+     border: 1px solid #008cff;
+     text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
+     box-shadow: 0 0 5px #008cff, 0 0 20px #008cff, 0 0 50px #008cff,
+       0 0 100px #008cff;
+   }
+   
