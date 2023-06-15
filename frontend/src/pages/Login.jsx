@@ -14,7 +14,6 @@ export default function Login() {
   axios.defaults.withCredentials = true;
 
   const handleSubmit = (e) => {
-    console.log(values);
     e.preventDefault();
     axios
       .post('http://localhost:3000/login', values)

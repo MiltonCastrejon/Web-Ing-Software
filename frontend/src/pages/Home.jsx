@@ -1,36 +1,49 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Home() {
-  const [auth, sethAuth] = useState(false);
+  const [auth, setAuth] = useState(false);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:3000').then((res) => {
-      if (res.data.status === 'Bienvenido') {
-        sethAuth(true);
-        setName(res.data.name);
-      } else {
-        sethAuth(false);
-        setMessage(res.data.message);
-      }
-    });
-  }, []);
+    const isAuthenticated = localStorage.getItem('auth');
+    if (isAuthenticated) {
+      setAuth(true);
+      setName(localStorage.getItem('name'));
+    } else {
+      axios.get('http://localhost:3000').then((res) => {
+        if (res.data.status === 'Bienvenido') {
+          setAuth(true);
+          setName(res.data.name);
+          localStorage.setItem('auth', true);
+          localStorage.setItem('name', res.data.name);
+        } else {
+          setAuth(false);
+          setMessage(res.data.message);
+          navigate('/login');
+        }
+      });
+    }
+  }, [navigate]);
 
   const handleLogout = () => {
     axios
       .get('http://localhost:3000/logout')
       .then((res) => {
-        if (res.data.status === 'Bienvenido') {
-          sethAuth(false);
+        if (res.data.message === 'Sesión cerrada') {
+          setAuth(false);
           setName('');
+          localStorage.removeItem('auth');
+          localStorage.removeItem('name');
+          navigate('/login');
         }
-        location.reload(true);
       })
       .catch((err) => console.log(err));
   };
+  
 
   return (
     <div className="contenedor">
@@ -55,3 +68,4 @@ function Home() {
 }
 
 export default Home;
+
