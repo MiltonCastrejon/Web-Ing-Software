@@ -16,7 +16,7 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:3000/login', values)
+      .post('http://localhost:3000/Login', values)
       .then((res) => {
         if (res.data.status === 'Bienvenido') {
           navigate('/');
@@ -29,7 +29,7 @@ export default function Login() {
 
   return (
     <div className="container">
-      <div className="card">
+      <div className=".cardSingIn">
         <div>
           <img className='logo' alt='MDN'>
           </img>

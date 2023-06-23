@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Rutas } from './routers/routes';
 import styled from 'styled-components';
 import { Sidebar } from './components/Sidebar';
 
 function App() {
-  const [sidebarOpen, setsidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Ocultar el sidebar si está en la página de Login
+    if (location.pathname === '/Login') {
+      setSidebarOpen(false);
+    } else {
+      setSidebarOpen(true);
+    }
+  }, [location]);
 
   return (
     <>
-      <BrowserRouter>
-        <Container
-          className={sidebarOpen ? 'sidebarState Activado' : 'sidebarState'}
-        >
-          <Sidebar sidebarOpen={sidebarOpen} setsidebarOpen={setsidebarOpen} />
-          <Rutas />
-        </Container>
-      </BrowserRouter>
+      <Container
+        className={sidebarOpen ? 'sidebarState Activado' : 'sidebarState'}
+      >
+        {sidebarOpen && (
+          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  />
+        )}
+        <Rutas />
+      </Container>
     </>
   );
 }
@@ -24,11 +34,18 @@ function App() {
 const Container = styled.div`
   display: grid;
   height: 100vh;
-  grid-template-columns: 90px auto;
-  background: #f5f5f5;
+  grid-template-columns:  auto;
+  background: transparent;
   &.Activado {
     grid-template-columns: 250px auto;
+  }&.sidebarState{
   }
 `;
 
-export default App;
+export default function Root() {
+  return (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+}

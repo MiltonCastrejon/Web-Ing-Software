@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import NavBar from '../components/NavBar';
+import styled from 'styled-components';
+import fondo from '../assets/background_img.jpg';
 
 function Home() {
   const [auth, setAuth] = useState(false);
@@ -23,7 +26,7 @@ function Home() {
         } else {
           setAuth(false);
           setMessage(res.data.message);
-          navigate('/login');
+          navigate('/Login');
         }
       });
     }
@@ -31,14 +34,14 @@ function Home() {
 
   const handleLogout = () => {
     axios
-      .get('http://localhost:3000/logout')
+      .get('http://localhost:3000/Logout')
       .then((res) => {
         if (res.data.message === 'Sesión cerrada') {
           setAuth(false);
           setName('');
           localStorage.removeItem('auth');
           localStorage.removeItem('name');
-          navigate('/login');
+          navigate('/Login');
         }
       })
       .catch((err) => console.log(err));
@@ -46,6 +49,7 @@ function Home() {
   
 
   return (
+    <Container>
     <div className="contenedor">
       {auth ? (
         <div>
@@ -58,14 +62,31 @@ function Home() {
         <div>
           <h1>{message}</h1>
           <h1>Iniciar sesión</h1>
-          <Link className="btn" to="/login">
+          <Link className="btn" to="/Login">
             Iniciar
           </Link>
         </div>
       )}
+      <NavBar/>
+      <div>
+        <div className="card">
+
+        </div>
+      </div>
     </div>
+    </Container>
   );
 }
 
 export default Home;
+
+const Container = styled.div`
+background-image: url(${fondo});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+height: 100vh;
+width: 100%;
+display: flex;
+justify-content: center;`
 

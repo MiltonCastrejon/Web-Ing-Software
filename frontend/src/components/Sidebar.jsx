@@ -4,12 +4,12 @@ import logo from '../assets/react.svg';
 import { NavLink } from 'react-router-dom';
 import { HiOutlineChevronDoubleLeft } from 'react-icons/hi';
 
-export function Sidebar({ sidebarOpen, setsidebarOpen }) {
+export function Sidebar({ sidebarOpen, setSidebarOpen }) {
   return (
     <Container isOpen={sidebarOpen}>
       <button
         className="btnSidebar"
-        onClick={() => setsidebarOpen(!sidebarOpen)}
+        onClick={() => setSidebarOpen(!sidebarOpen)}
       >
         <HiOutlineChevronDoubleLeft />
       </button>
