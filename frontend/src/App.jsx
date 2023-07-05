@@ -5,42 +5,35 @@ import styled from 'styled-components';
 import { Sidebar } from './components/Sidebar';
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
+  const isLoginPage = location.pathname === '/Login';
+  const [sidebarOpen, setSidebarOpen] = useState(!isLoginPage);
 
   useEffect(() => {
-    // Ocultar el sidebar si está en la página de Login
-    if (location.pathname === '/Login') {
-      setSidebarOpen(false);
-    } else {
-      setSidebarOpen(true);
-    }
-  }, [location]);
+    setSidebarOpen(!isLoginPage);
+  }, [isLoginPage]);
 
   return (
-    <>
-      <Container
-        className={sidebarOpen ? 'sidebarState Activado' : 'sidebarState'}
-      >
-        {sidebarOpen && (
-          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  />
-        )}
-        <Rutas />
-      </Container>
-    </>
+    <Container
+      className={sidebarOpen ? 'Activado' : 'Desactivado'}
+      isLoginPage={isLoginPage}
+      sidebarOpen={sidebarOpen}
+    >
+      {!isLoginPage && (
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      )}
+      <Rutas />
+    </Container>
   );
 }
 
 const Container = styled.div`
-
-  display: grid;
   height: 100vh;
-  grid-template-columns:  auto;
-  background: transparent;
-  &.Activado {
-    grid-template-columns: 250px auto;
-  }&.sidebarState{
-  }
+  ${({ isLoginPage }) => !isLoginPage && 'display: grid;'}
+  ${({ isLoginPage, sidebarOpen }) =>
+    !isLoginPage && sidebarOpen
+      ? 'grid-template-columns: 250px auto;'
+      : 'grid-template-columns: 90px auto;'}
 `;
 
 export default function Root() {

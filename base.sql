@@ -1,3 +1,5 @@
+alter user 'root'@'localhost' identified with mysql_native_password by '280506';
+create database dbvillanueva;
 use dbvillanueva;
 
 CREATE TABLE usuarios (
@@ -9,4 +11,11 @@ CREATE TABLE usuarios (
 
 INSERT INTO usuarios (nombre_usuario, password, tipo_usuario) VALUES ('Aldair', '123456', 'administrador');
 
-select * from usuarios
+select * from usuarios;
+
+CREATE TABLE proveedores (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  direccion VARCHAR(100) NOT NULL,
+  telefono VARCHAR(20) NOT NULL
+);

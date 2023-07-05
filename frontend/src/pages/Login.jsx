@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import logo from '../assets/react.svg';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 
@@ -30,9 +31,9 @@ export default function Login() {
 
   return (
     <div className="container">
-      <div className=".cardSingIn">
+      <div className="cardSingIn">
         <div>
-          <img className='logo' alt='MDN'>
+          <img className='logo' src={logo}>
           </img>
         </div>
         <h1>Iniciar sesión</h1>       

@@ -5,11 +5,14 @@ import { NavLink } from 'react-router-dom';
 import { HiOutlineChevronDoubleLeft } from 'react-icons/hi';
 
 export function Sidebar({ sidebarOpen, setSidebarOpen }) {
+  const ModiSidebarOpen = () => {
+    setSidebarOpen(!sidebarOpen);
+  }
   return (
     <Container isOpen={sidebarOpen}>
       <button
         className="btnSidebar"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
+        onClick={ModiSidebarOpen}
       >
         <HiOutlineChevronDoubleLeft />
       </button>
@@ -62,9 +65,6 @@ const linkArray = [
 //#region Estilos de Sidebar Top
 const Container = styled.div`
   background: #9247fc;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
   position: sticky;
   .btnSidebar {
     position: absolute;
