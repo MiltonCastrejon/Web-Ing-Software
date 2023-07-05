@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import '../styles/Login.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Login.css';
 
 export default function Login() {
   const [values, setValues] = useState({
@@ -19,6 +19,7 @@ export default function Login() {
       .post('http://localhost:3000/Login', values)
       .then((res) => {
         if (res.data.status === 'Bienvenido') {
+          localStorage.setItem('token', res.data.token); // Almacena el token en localStorage
           navigate('/');
         } else {
           alert(res.data.message);
@@ -34,7 +35,7 @@ export default function Login() {
           <img className='logo' alt='MDN'>
           </img>
         </div>
-        <h1>Iniciar sesion</h1>       
+        <h1>Iniciar sesión</h1>       
         <form onSubmit={handleSubmit}>
           <div className="formr">
             <input
@@ -59,10 +60,11 @@ export default function Login() {
             <label className="labelPassword">Contraseña</label>
           </div>
           <button type="Submit" className="btn">
-            Iniciar sesion{' '}
+            Iniciar sesión
           </button>
         </form>
       </div>
     </div>
   );
 }
+

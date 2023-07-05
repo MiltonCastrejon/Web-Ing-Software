@@ -3,7 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import About from '../pages/About';
-import Product from '../pages/Product';
+import Productos from '../pages/Productos';
+import Clientes from '../pages/Clientes';
+import Pedido from '../pages/Pedido';
+import Venta from '../pages/Venta';
+import Proveedores from '../pages/Proveedores';
+
 
 
 export function Rutas() {
@@ -13,7 +18,11 @@ export function Rutas() {
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/About" element={<About />} />
-        <Route path="/Product" element={<Product />} />
+        <Route path="/Productos" element={<Productos />} />
+        <Route path="/Pedido" element={<Pedido />} />
+        <Route path="/Clientes" element={<Clientes />} />
+        <Route path="/Ventas" element={<Venta />} />
+        <Route path="/Proveedores" element={<Proveedores />} />
       </Routes>
    
   );

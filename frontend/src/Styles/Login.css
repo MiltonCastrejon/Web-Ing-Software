@@ -3,7 +3,7 @@
   padding: 0;
 }
 .container {
-    background-image: url(../assets/background.jpg);
+  background-image: url(../assets/background.jpg);
      background-size: cover;
      background-position: center;
      min-height: 100vh;
@@ -13,7 +13,7 @@
    }
    h1 {
      margin-bottom: 40px;
-     text_size: 50px;
+    
    }
    /*Estilos para card */
    .cardSingIn {
@@ -27,7 +27,7 @@
      justify-content: center;
      align-items: center;
      position: relative;
-     backdrop-filter: blur(32px);
+     backdrop-filter: blur(18px);
    }
    .formr {
      display: flex;
@@ -122,7 +122,7 @@
     inset -1px -1px 6px rgba(255, 255, 255, 0.4);
    }
    /* Estilos para el boton */
-   .btn {
+   .btnSalir {
      margin-top: 40px;
      padding: 10px 20px;
      text-transform: uppercase;

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import NavBar from '../components/NavBar';
 import styled from 'styled-components';
 import fondo from '../assets/background_img.jpg';
 
@@ -30,11 +29,10 @@ function Home() {
         }
       });
     }
-  }, [navigate]);
-
+  }, [navigate]);  
   const handleLogout = () => {
     axios
-      .get('http://localhost:3000/Logout')
+      .get('http://localhost:3000/logout')
       .then((res) => {
         if (res.data.message === 'Sesión cerrada') {
           setAuth(false);
@@ -54,9 +52,9 @@ function Home() {
       {auth ? (
         <div>
           <h1>Bienvenido, {name}</h1>
-          <button className="btn" onClick={handleLogout}>
-            SALIR
-          </button>
+          <button className="btnSalir" onClick={handleLogout}>
+        SALIR
+      </button>
         </div>
       ) : (
         <div>
@@ -67,7 +65,6 @@ function Home() {
           </Link>
         </div>
       )}
-      <NavBar/>
       <div>
         <div className="card">
 
@@ -81,7 +78,6 @@ function Home() {
 export default Home;
 
 const Container = styled.div`
-background-image: url(${fondo});
 background-size: cover;
 background-position: center;
 background-repeat: no-repeat;

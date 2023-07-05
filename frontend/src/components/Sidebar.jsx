@@ -19,32 +19,42 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </div>
         <h2>Aldair</h2>
       </div>
-      {linkArray.map(({icon,label, to}) => (
+      {linkArray.map(({ icon, label, to }) => (
         <div className="linkContent" key={label}>
-           <NavLink to={to}  className={({isActive})=>`links${isActive?` active`:``}`}>
-                <div className='LinkIcon'>
-                    {icon}
-                </div>
-                    <div>
-                        {sidebarOpen &&(label)}
-                    </div>
-            </NavLink>
+          <NavLink
+            to={to}
+            className={({ isActive }) => `links${isActive ? ` active` : ``}`}
+          >
+            <div className="LinkIcon">{icon}</div>
+            <div>{sidebarOpen && label}</div>
+          </NavLink>
         </div>
       ))}
+     
     </Container>
   );
 }
 //#region Array de links
 const linkArray = [
   {
-    label: 'Home',
+    label: 'Operaciones',
     icon: <HiOutlineChevronDoubleLeft />,
     to: '/',
   },
   {
-    label: 'About',
+    label: 'Productos',
     icon: <HiOutlineChevronDoubleLeft />,
-    to: '/About',
+    to: '/Productos',
+  },
+  {
+    label: 'Clientes',
+    icon: <HiOutlineChevronDoubleLeft />,
+    to: '/Clientes',
+  },
+  {
+    label: 'Proveedores',
+    icon: <HiOutlineChevronDoubleLeft />,
+    to: '/Proveedores',
   },
 ];
 //#endregion

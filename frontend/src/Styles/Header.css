@@ -1,0 +1,78 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+.Header-Container {
+  background-color: #f9f9f9;
+  width: auto;
+  height: 50px;
+  border-radius: 15px;
+  box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.4);
+  margin: 8px 15px;
+  padding: 0 20px;
+}
+.Header-title {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+.Head-title {
+  font-size: 30px;
+  color: #000;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-weight:600;
+  font-family: Arimo, sans-serif; 
+}
+
+.Button-Header {
+  padding: 12.5px 30px;
+  margin: -15px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #2ba8fb;
+  color: #ffffff;
+  font-weight: Bold;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+}
+
+.Button-Header:hover {
+  background-color: #6fc5ff;
+  box-shadow: 0 0 20px #6fc5ff50;
+  transform: scale(1.1);
+}
+
+.Button-Header:active {
+  background-color: #3d94cf;
+  transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+/* Estilos para el modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Estilos adicionales según tus necesidades */
