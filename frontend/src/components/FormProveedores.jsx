@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-export default function FormularioProveedores({ onClose, proveedor }) {
+export default function FormularioProveedores({ onClose, onSave, proveedor }) {
   const [formData, setFormData] = useState({
     nombre: '',
     direccion: '',
@@ -14,25 +14,45 @@ export default function FormularioProveedores({ onClose, proveedor }) {
   useEffect(() => {
     if (proveedor) {
       setFormData(proveedor);
+    } else {
+      setFormData({
+        nombre: '',
+        direccion: '',
+        telefono: '',
+      });
     }
   }, [proveedor]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-
     const token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    axios
-      .post('http://localhost:3000/Proveedores', formData)
-      .then((response) => {
-        console.log(response.data);
-        setFormData({ nombre: '', direccion: '', telefono: '' });
-        onClose();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (proveedor) {
+      // Edit existing provider
+      axios
+        .put(`http://localhost:3000/Proveedores/${proveedor.id}`, formData)
+        .then((response) => {
+          console.log(response.data);
+          onClose();
+          onSave();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      // Add new provider
+      axios
+        .post('http://localhost:3000/Proveedores', formData)
+        .then((response) => {
+          console.log(response.data);
+          onClose();
+          onSave();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -43,13 +63,18 @@ export default function FormularioProveedores({ onClose, proveedor }) {
   };
 
   const handleCancel = () => {
-    setFormData({ nombre: '', direccion: '', telefono: '' });
+    setFormData({
+      nombre: '',
+      direccion: '',
+      telefono: '',
+    });
     onClose();
+    onSave();
   };
 
   return (
     <ContainerForm>
-      <h2>Añadir Proveedor</h2>
+      <h2>{proveedor ? 'Editar Proveedor' : 'Añadir Proveedor'}</h2>
       <form onSubmit={handleFormSubmit}>
         <input
           type="text"
@@ -76,7 +101,7 @@ export default function FormularioProveedores({ onClose, proveedor }) {
           required
         />
         <div className="button-container">
-          <button type="submit">Guardar</button>
+          <button type="submit">{proveedor ? 'Guardar' : 'Crear'}</button>
           <button type="button" onClick={handleCancel}>
             Cancelar
           </button>
@@ -87,6 +112,16 @@ export default function FormularioProveedores({ onClose, proveedor }) {
 }
 
 const ContainerForm = styled.div`
+/* Estilos para la ventana flotante */
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: white;
+padding: 20px;
+border-radius: 6px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+z-index: 9999;
   form {
     margin-top: 20px;
     display: flex;
@@ -128,4 +163,15 @@ const ContainerForm = styled.div`
     background-color: #4287ef;
     color: #fff;
   }
+`;
+
+const Overlay = styled.div`
+  /* Estilos para la capa semi-transparente */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
 `;

@@ -1,11 +1,18 @@
 .proveedores-container {
+  overflow-x: auto;
+  max-height: 80vh;
   display: grid;
   place-items: center;
   margin-top: 20px;
+  position: relative;
+}
+
+.scrollable {
+  overflow-x: hidden;
 }
 
 .proveedores-table {
-  width: 80%;
+  width: 90%;
   border-collapse: collapse;
 }
 
@@ -16,7 +23,14 @@
 }
 
 .proveedores-table th {
-  background-color: #f2f2f2;
+  background-color: #05acff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.proveedores-table thead {
+  position: relative;
 }
 
 .proveedores-table tbody tr:nth-child(even) {
@@ -31,3 +45,14 @@
   text-align: center;
 }
 
+.add-button {
+  position: fixed;
+  z-index: 2;
+  top: 16px;
+  right: 25px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: #05acff;
+  color: white;
+  border: none;
+}

@@ -10,10 +10,12 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
   }
   return (
     <Container isOpen={sidebarOpen}>
+      <div className='side-conta'>
+
       <button
         className="btnSidebar"
         onClick={ModiSidebarOpen}
-      >
+        >
         <HiOutlineChevronDoubleLeft />
       </button>
       <div className="logoContent">
@@ -27,13 +29,14 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <NavLink
             to={to}
             className={({ isActive }) => `links${isActive ? ` active` : ``}`}
-          >
+            >
             <div className="LinkIcon">{icon}</div>
             <div>{sidebarOpen && label}</div>
           </NavLink>
         </div>
       ))}
      
+      </div>
     </Container>
   );
 }
