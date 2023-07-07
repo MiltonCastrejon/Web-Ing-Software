@@ -29,7 +29,7 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     if (proveedor) {
-      // Edit existing provider
+      // Editar proveedor existente
       axios
         .put(`http://localhost:3000/Proveedores/${proveedor.id}`, formData)
         .then((response) => {
@@ -41,7 +41,7 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
           console.error(error);
         });
     } else {
-      // Add new provider
+      // Agregar nuevo proveedor
       axios
         .post('http://localhost:3000/Proveedores', formData)
         .then((response) => {
@@ -73,55 +73,58 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
   };
 
   return (
-    <ContainerForm>
-      <h2>{proveedor ? 'Editar Proveedor' : 'Añadir Proveedor'}</h2>
-      <form onSubmit={handleFormSubmit}>
-        <input
-          type="text"
-          name="nombre"
-          value={formData.nombre}
-          onChange={handleInputChange}
-          placeholder="Nombre"
-          required
-        />
-        <input
-          type="text"
-          name="direccion"
-          value={formData.direccion}
-          onChange={handleInputChange}
-          placeholder="Dirección"
-          required
-        />
-        <input
-          type="text"
-          name="telefono"
-          value={formData.telefono}
-          onChange={handleInputChange}
-          placeholder="Teléfono"
-          required
-        />
-        <div className="button-container">
-          <button type="submit">{proveedor ? 'Guardar' : 'Crear'}</button>
-          <button type="button" onClick={handleCancel}>
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </ContainerForm>
+    <>
+      <Overlay />
+      <ContainerForm>
+        <h2>{proveedor ? 'Editar Proveedor' : 'Añadir Proveedor'}</h2>
+        <form onSubmit={handleFormSubmit}>
+          <input
+            type="text"
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleInputChange}
+            placeholder="Nombre"
+            required
+          />
+          <input
+            type="text"
+            name="direccion"
+            value={formData.direccion}
+            onChange={handleInputChange}
+            placeholder="Dirección"
+            required
+          />
+          <input
+            type="text"
+            name="telefono"
+            value={formData.telefono}
+            onChange={handleInputChange}
+            placeholder="Teléfono"
+            required
+          />
+          <div className="button-container">
+            <button type="submit">{proveedor ? 'Guardar' : 'Crear'}</button>
+            <button type="button" onClick={handleCancel}>
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </ContainerForm>
+    </>
   );
 }
 
 const ContainerForm = styled.div`
-/* Estilos para la ventana flotante */
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-background-color: white;
-padding: 20px;
-border-radius: 6px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-z-index: 9999;
+  /* Estilos para la ventana flotante */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
   form {
     margin-top: 20px;
     display: flex;

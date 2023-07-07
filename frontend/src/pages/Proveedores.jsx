@@ -55,6 +55,7 @@ const Proveedores = () => {
 
   const handleOpenForm = () => {
     setShowForm(true);
+    setEditProveedor(null);
   };
 
   const handleCloseForm = () => {
@@ -79,7 +80,9 @@ const Proveedores = () => {
       <button className="add-button" onClick={handleOpenForm}>
         Nuevo Proveedor
       </button>
-      <div className={`proveedores-container ${showScrollBar ? 'scrollable' : ''}`}>
+      <div
+        className={`proveedores-container ${showScrollBar ? 'scrollable' : ''}`}
+      >
         {Array.isArray(proveedores) && proveedores.length > 0 ? (
           <table className="proveedores-table" ref={tableRef}>
             <thead>
@@ -97,8 +100,14 @@ const Proveedores = () => {
                   <td>{proveedor.direccion}</td>
                   <td>{proveedor.telefono}</td>
                   <td>
-                    <button onClick={() => handleEditarProveedor(proveedor)}>Editar</button>
-                    <button onClick={() => handleEliminarProveedor(proveedor.id)}>Eliminar</button>
+                    <button onClick={() => handleEditarProveedor(proveedor)}>
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleEliminarProveedor(proveedor.id)}
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -123,12 +132,6 @@ const Proveedores = () => {
 };
 
 export default Proveedores;
-
-
-
-
-
-
 
 /*
   const handleGuardarProveedor = (proveedor) => {
