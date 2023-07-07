@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import Header from "../components/Header";
-import axios from "axios";
-import FormProveedores from "../components/FormProveedores";
-import "../styles/Prove.css"
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Header from '../components/Header';
+import FormularioProveedores from '../components/FormProveedores';
+import '../styles/Prove.css';
 
-export default function Proveedores() {
+const Proveedores = () => {
   const [proveedores, setProveedores] = useState([]);
+  const [editProveedor, setEditProveedor] = useState(null);
 
   useEffect(() => {
     fetchProveedores();
@@ -13,7 +14,7 @@ export default function Proveedores() {
 
   const fetchProveedores = () => {
     axios
-      .get("http://localhost:3000/Proveedores")
+      .get('http://localhost:3000/Proveedores')
       .then((response) => {
         setProveedores(response.data);
       })
@@ -23,8 +24,35 @@ export default function Proveedores() {
   };
 
   const handleGuardarProveedor = (proveedor) => {
+    if (editProveedor) {
+      axios
+        .put(`http://localhost:3000/Proveedores/${editProveedor.id}`, proveedor)
+        .then((response) => {
+          fetchProveedores();
+          setEditProveedor(null);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      axios
+        .post('http://localhost:3000/Proveedores', proveedor)
+        .then((response) => {
+          fetchProveedores();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  const handleEditarProveedor = (proveedor) => {
+    setEditProveedor(proveedor);
+  };
+
+  const handleEliminarProveedor = (proveedorId) => {
     axios
-      .post("http://localhost:3000/Proveedores", proveedor)
+      .delete(`http://localhost:3000/Proveedores/${proveedorId}`)
       .then((response) => {
         fetchProveedores();
       })
@@ -34,28 +62,57 @@ export default function Proveedores() {
   };
 
   return (
-    <>
+    <div>
       <Header
         Title="Proveedores"
         AddButton="Agregar"
-        FormComponent={FormProveedores}
-        onSave={handleGuardarProveedor} // Agregar el manejador de guardar proveedor
+        FormComponent={FormularioProveedores}
+        onSave={handleGuardarProveedor}
       />
       <div className="proveedores-container">
-        {Array.isArray(proveedores) ? (
-          proveedores.map((proveedor) => (
-            <div key={proveedor.id} className="proveedor-card">
-              <h3>{proveedor.nombre}</h3>
-              <p>Dirección: {proveedor.direccion}</p>
-              <p>Teléfono: {proveedor.telefono}</p>
-            </div>
-          ))
+        {Array.isArray(proveedores) && proveedores.length > 0 ? (
+          <table className="proveedores-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {proveedores.map((proveedor) => (
+                <tr key={proveedor.id}>
+                  <td>{proveedor.nombre}</td>
+                  <td>{proveedor.direccion}</td>
+                  <td>{proveedor.telefono}</td>
+                  <td>
+                    <button onClick={() => handleEditarProveedor(proveedor)}>
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleEliminarProveedor(proveedor.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <p>No hay proveedores disponibles</p>
         )}
       </div>
-    </>
+
+      {editProveedor && (
+        <FormularioProveedores
+          onClose={() => setEditProveedor(null)}
+          proveedor={editProveedor}
+        />
+      )}
+    </div>
   );
-}
+};
 
-
+export default Proveedores;

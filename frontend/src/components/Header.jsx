@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Header.css';
 
-export default function Header({ Title, AddButton, FormComponent }) {
+export default function Header({ Title, AddButton, FormComponent,  }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddButtonClick = () => {
@@ -30,7 +30,6 @@ export default function Header({ Title, AddButton, FormComponent }) {
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Formulario</h2>
             <FormComponent onClose={handleModalClose} />
           </div>
         </div>

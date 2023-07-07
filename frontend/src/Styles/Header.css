@@ -1,8 +1,8 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 .Header-Container {
   background-color: #f9f9f9;
@@ -27,8 +27,8 @@
   text-align: center;
   margin: 0;
   padding: 0;
-  font-weight:600;
-  font-family: Arimo, sans-serif; 
+  font-weight: 600;
+  font-family: Arimo, sans-serif;
 }
 
 .Button-Header {
@@ -59,6 +59,7 @@
 /* Estilos para el modal */
 .modal {
   position: fixed;
+  z-index: 100;
   top: 0;
   left: 0;
   width: 100%;
@@ -70,9 +71,9 @@
 }
 
 .modal-content {
-  background-color: #fff;
+  background-color: #ffffff;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 18px;
 }
 
 /* Estilos adicionales según tus necesidades */

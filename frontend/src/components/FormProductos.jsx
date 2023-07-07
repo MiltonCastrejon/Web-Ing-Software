@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-export default function FormularioProveedores({ onClose, proveedor }) {
+export default function FormularioProductos({ onClose, producto }) {
   const [formData, setFormData] = useState({
     nombre: '',
-    direccion: '',
-    telefono: '',
+    imagen: '',
+    precio: '',
+    descripcion: '',
   });
 
   axios.defaults.withCredentials = true;
 
   useEffect(() => {
-    if (proveedor) {
-      setFormData(proveedor);
+    if (producto) {
+      setFormData(producto);
     }
-  }, [proveedor]);
+  }, [producto]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -24,10 +25,10 @@ export default function FormularioProveedores({ onClose, proveedor }) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     axios
-      .post('http://localhost:3000/Proveedores', formData)
+      .post('http://localhost:3000/Productos', formData)
       .then((response) => {
         console.log(response.data);
-        setFormData({ nombre: '', direccion: '', telefono: '' });
+        setFormData({ nombre: '', imagen: '', precio: '', descripcion: '' });
         onClose();
       })
       .catch((error) => {
@@ -43,13 +44,13 @@ export default function FormularioProveedores({ onClose, proveedor }) {
   };
 
   const handleCancel = () => {
-    setFormData({ nombre: '', direccion: '', telefono: '' });
+    setFormData({ nombre: '', imagen: '', precio: '', descripcion: '' });
     onClose();
   };
 
   return (
-    <ContainerForm>
-      <h2>Añadir Proveedor</h2>
+    <ProductForm>
+      <h2>Añadir Producto</h2>
       <form onSubmit={handleFormSubmit}>
         <input
           type="text"
@@ -61,38 +62,46 @@ export default function FormularioProveedores({ onClose, proveedor }) {
         />
         <input
           type="text"
-          name="direccion"
-          value={formData.direccion}
+          name="imagen"
+          value={formData.imagen}
           onChange={handleInputChange}
-          placeholder="Dirección"
+          placeholder="Imagen"
           required
         />
         <input
           type="text"
-          name="telefono"
-          value={formData.telefono}
+          name="precio"
+          value={formData.precio}
           onChange={handleInputChange}
-          placeholder="Teléfono"
+          placeholder="Precio"
           required
         />
-        <div className="button-container">
-          <button type="submit">Guardar</button>
+        <input
+          type="text"
+          name="descripcion"
+          value={formData.descripcion}
+          onChange={handleInputChange}
+          placeholder="Descripcion"
+          required
+        />
+        <div>
+        <button type="submit">Guardar</button>
           <button type="button" onClick={handleCancel}>
             Cancelar
           </button>
         </div>
       </form>
-    </ContainerForm>
+    </ProductForm>
   );
 }
 
-const ContainerForm = styled.div`
+const ProductForm = styled.div`  
   form {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-radius: 0px;
+    border-radius: 30px;
   }
   form input {
     margin: 5px;
