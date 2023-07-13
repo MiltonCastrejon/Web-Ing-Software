@@ -11,6 +11,9 @@ function Home() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
+  axios.defaults.withCredentials = true;
+
+
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('auth');
     if (isAuthenticated) {
@@ -26,25 +29,11 @@ function Home() {
         } else {
           setAuth(false);
           setMessage(res.data.message);
-          navigate('/Login');
+          navigate('/Login');categoría
         }
       });
     }
-  }, [navigate]);
-  const handleLogout = () => {
-    axios
-      .get('http://localhost:3000/logout')
-      .then((res) => {
-        if (res.data.message === 'Sesión cerrada') {
-          setAuth(false);
-          setName('');
-          localStorage.removeItem('auth');
-          localStorage.removeItem('name');
-          navigate('/Login');
-        }
-      })
-      .catch((err) => console.log(err));
-  };
+  }, [navigate]);  
 
   return (
     <Container>
@@ -52,9 +41,6 @@ function Home() {
         {auth ? (
           <div>
             <h1>Bienvenido, {name}</h1>
-            <button className="btnSalir" onClick={handleLogout}>
-              SALIR
-            </button>
           </div>
         ) : (
           <div>

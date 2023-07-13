@@ -54,7 +54,6 @@ const verifyUser = (req, res, next) => {
 app.get('/', verifyUser, (req, res, next) => {
   return res.json({ status: 'Bienvenido', name: req.name });
 });
-
 app.post('/login', (req, res) => {
   const sql =
     'SELECT * FROM usuarios WHERE nombre_usuario = ? AND password = ?';
@@ -70,12 +69,10 @@ app.post('/login', (req, res) => {
     }
   });
 });
-
 app.get('/logout', (req, res) => {
   res.clearCookie('token', { sameSite: 'none', secure: true });
   return res.json({ message: 'Sesión cerrada' });
 });
-
 app.post('/Proveedores', verifyUser, (req, res) => {
   const { nombre, direccion, telefono } = req.body;
 
@@ -123,7 +120,6 @@ app.put('/Proveedores/:id', verifyUser, (req, res) => {
       .json({ message: 'Datos del proveedor actualizados correctamente' });
   });
 });
-
 app.delete('/Proveedores/:id', verifyUser, (req, res) => {
   const proveedorId = req.params.id;
 
@@ -140,9 +136,22 @@ app.delete('/Proveedores/:id', verifyUser, (req, res) => {
       .json({ message: 'Proveedor eliminado correctamente' });
   });
 });
+app.delete('/Productos/:idProductos', verifyUser, (req, res) => {
+  const productoId = req.params.idProductos;
 
-app.get('/productos', verifyUser, (req, res) => {
-  const sql = 'SELECT nombre,imagen, precio, descripcion FROM productos';
+  const sql = 'DELETE FROM productos WHERE idProductos = ?';
+  db.query(sql, [productoId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el producto:', err);
+      return res.status(500).json({ message: 'Error al eliminar el producto' });
+    }
+    return res
+      .status(200)
+      .json({ message: 'Producto eliminado correctamente' });
+  });
+});
+app.get('/Productos', verifyUser, (req, res) => {
+  const sql = 'SELECT * FROM productos';
   db.query(sql, (err, data) => {
     if (err) {
       console.error('Error al obtener los productos:', err);
@@ -153,48 +162,201 @@ app.get('/productos', verifyUser, (req, res) => {
     return res.status(200).json(data);
   });
 });
-
-app.post('/productos', verifyUser, (req, res) => {
-  const { nombre, imagen, precio, descripcion } = req.body;
+app.put('/Productos/:idProductos', verifyUser, (req, res) => {
+  const productoId = req.params.idProductos;
+  const { categoriaId, nombre, descripcion, precio, stock, fabricante } =
+    req.body;
 
   const sql =
-    'INSERT INTO productos (nombre, imagen, precio, descripcion) VALUES (?, ?, ?, ?)';
-  db.query(sql, [nombre, imagen, precio, descripcion], (err, result) => {
+    'UPDATE productos SET categoriaId = ?, nombre = ?, descripcion = ?, precio = ?, stock = ?, fabricante = ? WHERE idProductos = ?';
+  db.query(
+    sql,
+    [categoriaId, nombre, descripcion, precio, stock, fabricante, productoId],
+    (err, result) => {
+      if (err) {
+        console.error('Error al actualizar los datos del producto:', err);
+        return res
+          .status(500)
+          .json({ message: 'Error al actualizar los datos del producto' });
+      }
+      return res.status(200).json({
+        message: 'Datos del producto actualizados correctamente',
+      });
+    }
+  );
+});
+app.post('/Productos', verifyUser, (req, res) => {
+  const { categoriaId, nombre, descripcion, precio, stock, fabricante } =
+    req.body;
+
+  const sql =
+    'INSERT INTO productos (categoriaId, nombre, descripcion, precio, stock, fabricante) VALUES (?, ?, ?, ?, ?, ?)';
+  db.query(
+    sql,
+    [req.body.categoriaId, nombre, descripcion, precio, stock, fabricante],
+    (err, result) => {
+      if (err) {
+        console.error('Error al guardar los datos del producto:', err);
+        return res
+          .status(500)
+          .json({ message: 'Error al guardar los datos del producto' });
+      }
+      return res
+        .status(200)
+        .json({ message: 'Datos del producto guardados correctamente' });
+    }
+  );
+});
+app.get('/Categorias', verifyUser, (req, res) => {
+  const sql = 'SELECT * FROM categorias';
+  db.query(sql, (err, data) => {
     if (err) {
-      console.error('Error al guardar los datos del producto:', err);
+      console.error('Error al obtener las categorías:', err);
       return res
         .status(500)
-        .json({ message: 'Error al guardar los datos del producto' });
+        .json({ message: 'Error al obtener las categorías' });
+    }
+    return res.status(200).json(data);
+  });
+});
+app.post('/Categorias', verifyUser, (req, res) => {
+  const { nombrecategoria, descripcionCategoria } = req.body;
+
+  const sql =
+    'INSERT INTO categorias(nombrecategoria, descripcionCategoria) VALUES (?, ?)';
+  db.query(sql, [nombrecategoria, descripcionCategoria], (err, result) => {
+    if (err) {
+      console.error('Error al guardar los datos de la categoría:', err);
+      return res
+        .status(500)
+        .json({ message: 'Error al guardar los datos de la categoría' });
     }
     return res
       .status(200)
-      .json({ message: 'Datos del producto guardados correctamente' });
+      .json({ message: 'Datos de la categoría guardados correctamente' });
   });
 });
+app.delete('/Categorias/:idCategoria', verifyUser, (req, res) => {
+  const categoriaId = req.params.idCategoria;
 
-app.get('/productos/:id/imagen', (req, res) => {
-  const productId = req.params.id;
-  const sql = 'SELECT imagen FROM productos WHERE id = ?';
-  db.query(sql, [productId], (err, data) => {
+  const sql = 'DELETE FROM categorias WHERE idCategoria = ?';
+  db.query(sql, [categoriaId], (err, result) => {
     if (err) {
-      console.error('Error al obtener la imagen del producto:', err);
+      console.error('Error al eliminar la categoría:', err);
       return res
         .status(500)
-        .json({ message: 'Error al obtener la imagen del producto' });
+        .json({ message: 'Error al eliminar la categoría' });
     }
-    if (data.length === 0 || !data[0].imagen) {
-      return res.status(404).json({ message: 'Imagen no encontrada' });
-    }
-    // Devuelve los datos binarios de la imagen al cliente
-    const imageBuffer = data[0].imagen;
-    res.writeHead(200, {
-      'Content-Type': 'image/png', // Ajusta el tipo de contenido según el tipo de imagen
-      'Content-Length': imageBuffer.length,
-    });
-    return res.end(imageBuffer);
+    return res
+      .status(200)
+      .json({ message: 'Categoría eliminada correctamente' });
   });
 });
+app.put('/Categorias/:idCategoria', verifyUser, (req, res) => {
+  const categoriaId = req.params.idCategoria;
+  const { nombrecategoria, descripcionCategoria } = req.body;
 
+  const sql =
+    'UPDATE categorias SET nombrecategoria = ?, descripcionCategoria = ? WHERE idCategoria = ?';
+  db.query(
+    sql,
+    [nombrecategoria, descripcionCategoria, categoriaId],
+    (err, result) => {
+      if (err) {
+        console.error('Error al actualizar los datos de la categoría:', err);
+        return res
+          .status(500)
+          .json({ message: 'Error al actualizar los datos de la categoría' });
+      }
+      return res.status(200).json({
+        message: 'Datos de la categoría actualizados correctamente',
+      });
+    }
+  );
+});
+app.get('/DetalleVenta', verifyUser, (req, res) => {
+  const sql = 'SELECT * FROM detalleventa';
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error('Error al obtener los detalles de venta:', err);
+      return res
+        .status(500)
+        .json({ message: 'Error al obtener los detalles de venta' });
+    }
+    return res.status(200).json(data);
+  });
+});
+app.get('/Ventas', verifyUser, (req, res) => {
+  const sql =
+    'SELECT  DetalleVenta.idDetalleVenta,  Ventas.idVenta,  clientes.NombreCliente,  productos.nombre,  Ventas.fechaVenta,  DetalleVenta.cantidadVendida,  productos.precio,  Ventas.TotalVenta FROM  DetalleVenta  INNER JOIN Ventas ON Ventas.idVenta = DetalleVenta.idVenta  INNER JOIN productos ON DetalleVenta.idProducto = productos.idProductos  INNER JOIN clientes ON Ventas.idCliente = clientes.idcliente';
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error('Error al obtener las ventas:', err);
+      return res.status(500).json({ message: 'Error al obtener las ventas' });
+    }
+    return res.status(200).json(data);
+  });
+});
+app.get('/Clientes', verifyUser, (req, res) => {
+  const sql = 'SELECT * FROM clientes';
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error('Error al obtener los clientes:', err);
+      return res.status(500).json({ message: 'Error al obtener los clientes' });
+    }
+    return res.status(200).json(data);
+  });
+});
+app.post('/Clientes', verifyUser, (req, res) => {
+  const { nombreCliente, DNI, direccion, telefono } = req.body;
+  const sql =
+    'INSERT INTO clientes (nombreCliente, DNI, direccion, telefono) VALUES (?, ?, ?, ?)';
+  db.query(sql, [nombreCliente, DNI, direccion, telefono], (err, result) => {
+    if (err) {
+      console.error('Error al guardar los datos del cliente:', err);
+      return res
+        .status(500)
+        .json({ message: 'Error al guardar los datos del cliente' });
+    }
+    return res
+      .status(200)
+      .json({ message: 'Datos del cliente guardados correctamente' });
+  });
+});
+app.put('/Clientes/:idCliente', verifyUser, (req, res) => {
+  const clienteId = req.params.idCliente;
+  const { nombreCliente, DNI, direccion, telefono } = req.body;
+
+  const sql =
+    'UPDATE clientes SET nombreCliente = ?, DNI = ?, direccion = ?, telefono = ? WHERE idCliente = ?';
+  db.query(
+    sql,
+    [nombreCliente, DNI, direccion, telefono, clienteId],
+    (err, result) => {
+      if (err) {
+        console.error('Error al actualizar los datos del cliente:', err);
+        return res.status(500).json({
+          message: 'Error al actualizar los datos del cliente',
+        });
+      }
+      return res.status(200).json({
+        message: 'Datos del cliente actualizados correctamente',
+      });
+    }
+  );
+});
+app.delete('/Clientes/:idCliente', verifyUser, (req, res) => {
+  const clienteId = req.params.idCliente;
+
+  const sql = 'DELETE FROM clientes WHERE idCliente = ?';
+  db.query(sql, [clienteId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el cliente:', err);
+      return res.status(500).json({ message: 'Error al eliminar el cliente' });
+    }
+    return res.status(200).json({ message: 'Cliente eliminado correctamente' });
+  });
+});
 app.listen(3000, () => {
-  console.log('Server running on port 3000');
+  console.log('Servidor en el puerto 3000');
 });

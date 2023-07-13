@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import styled from 'styled-components'; // Agrega esta línea
 import Header from '../components/Header';
 import FormularioProveedores from '../components/FormProveedores';
 import '../styles/Prove.css';
@@ -9,6 +10,8 @@ const Proveedores = () => {
   const [editProveedor, setEditProveedor] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const tableRef = useRef(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [proveedorToDelete, setProveedorToDelete] = useState(null);
 
   useEffect(() => {
     fetchProveedores();
@@ -42,15 +45,20 @@ const Proveedores = () => {
       });
   };
 
-  const handleEliminarProveedor = (proveedorId) => {
+  const handleEliminarProveedor = () => {
     axios
-      .delete(`http://localhost:3000/Proveedores/${proveedorId}`)
+      .delete(`http://localhost:3000/Proveedores/${proveedorToDelete}`)
       .then((response) => {
         fetchProveedores();
       })
       .catch((error) => {
         console.error(error);
       });
+    setShowConfirmation(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmation(false);
   };
 
   const handleOpenForm = () => {
@@ -99,12 +107,19 @@ const Proveedores = () => {
                   <td>{proveedor.nombre}</td>
                   <td>{proveedor.direccion}</td>
                   <td>{proveedor.telefono}</td>
-                  <td>
-                    <button onClick={() => handleEditarProveedor(proveedor)}>
+                  <td className="btn-container">
+                    <button
+                      className="btn-editar"
+                      onClick={() => handleEditarProveedor(proveedor)}
+                    >
                       Editar
                     </button>
                     <button
-                      onClick={() => handleEliminarProveedor(proveedor.id)}
+                      className="btn-eliminar"
+                      onClick={() => {
+                        setProveedorToDelete(proveedor.id);
+                        setShowConfirmation(true);
+                      }}
                     >
                       Eliminar
                     </button>
@@ -127,37 +142,76 @@ const Proveedores = () => {
           />
         </div>
       )}
+      {showConfirmation && (
+        <ConfirmationDialogBox
+          message="¿Estás seguro de eliminar a este proveedor?"
+          onCancel={handleCancelDelete}
+          onConfirm={handleEliminarProveedor}
+        />
+      )}
     </div>
   );
 };
 
 export default Proveedores;
 
-/*
-  const handleGuardarProveedor = (proveedor) => {
-    if (editProveedor) {
-      axios
-        .put(`http://localhost:3000/Proveedores/${editProveedor.id}`, proveedor)
-        .then((response) => {
-          setEditProveedor(null);
-          fetchProveedores(); // Actualiza la lista de proveedores después de la edición
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      axios
-        .post('http://localhost:3000/Proveedores', proveedor)
-        .then((response) => {
-          fetchProveedores(); // Actualiza la lista de proveedores después de la creación
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  };
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  backdrop-filter: blur(6px);
+`;
 
-  const handleEditarProveedor = (proveedor) => {
-    setEditProveedor(proveedor);
-  };
-  */
+const ConfirmationDialog = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+`;
+
+const ConfirmationMessage = styled.p`
+  margin-bottom: 10px;
+`;
+
+const ConfirmationButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const ConfirmationButton = styled.button`
+  margin: 15px 5px 0;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 2px solid #4287ef;
+  background: #fff;
+  color: #4287ef;
+  font-weight: bold;
+  cursor: pointer;
+  &: hover {
+    background: #4287ef;
+    color: #fff;
+  }
+`;
+
+function ConfirmationDialogBox({ message, onCancel, onConfirm }) {
+  return (
+    <Overlay>
+      <ConfirmationDialog>
+        <ConfirmationMessage>{message}</ConfirmationMessage>
+        <ConfirmationButtonContainer>
+          <ConfirmationButton onClick={onCancel}>Cancelar</ConfirmationButton>
+          <ConfirmationButton onClick={onConfirm}>Aceptar</ConfirmationButton>
+        </ConfirmationButtonContainer>
+      </ConfirmationDialog>
+    </Overlay>
+  );
+}

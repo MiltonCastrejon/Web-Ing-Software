@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-export default function FormularioProveedores({ onClose, onSave, proveedor }) {
+export default function FormularioClientes({ onClose, onSave, cliente }) {
   const [formData, setFormData] = useState({
-    nombre: '',
+    nombreCliente: '',
+    DNI: '',
     direccion: '',
     telefono: '',
   });
@@ -12,25 +13,26 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
   axios.defaults.withCredentials = true;
 
   useEffect(() => {
-    if (proveedor) {
-      setFormData(proveedor);
+    if (cliente) {
+      setFormData(cliente);
     } else {
       setFormData({
-        nombre: '',
+        nombreCliente: '',
+        DNI: '',
         direccion: '',
         telefono: '',
       });
     }
-  }, [proveedor]);
+  }, [cliente]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    if (proveedor) {
+    if (cliente) {
       axios
-        .put(`http://localhost:3000/Proveedores/${proveedor.id}`, formData)
+        .put(`http://localhost:3000/Clientes/${cliente.idCliente}`, formData)
         .then((response) => {
           console.log(response.data);
           onClose();
@@ -40,9 +42,9 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
           console.error(error);
         });
     } else {
-      // Agregar nuevo proveedor
+      // Agregar nuevo cliente
       axios
-        .post('http://localhost:3000/Proveedores', formData)
+        .post('http://localhost:3000/Clientes', formData)
         .then((response) => {
           console.log(response.data);
           onClose();
@@ -60,10 +62,10 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleCancel = () => {
     setFormData({
-      nombre: '',
+      nombreCliente: '',
+      DNI: '',
       direccion: '',
       telefono: '',
     });
@@ -75,17 +77,28 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
     <>
       <Overlay />
       <ContainerForm>
-        <h2>{proveedor ? 'Editar Proveedor' : 'Añadir Proveedor'}</h2>
+        <h2>{cliente ? 'Editar cliente' : 'Añadir Cliente'}</h2>
         <form onSubmit={handleFormSubmit}>
           <div className="inputbox">
             <input
               type="text"
-              name="nombre"
-              value={formData.nombre}
+              name="nombreCliente"
+              value={formData.nombreCliente}
               onChange={handleInputChange}
               required
             />
-            <span>Nombre</span>
+            <span>Nombre Completo</span>
+            <i></i>
+          </div>
+          <div className="inputbox">
+            <input
+              type="number"
+              name="DNI"
+              value={formData.DNI}
+              onChange={handleInputChange}
+              required
+            />
+            <span>DNI</span>
             <i></i>
           </div>
           <div className="inputbox">
@@ -101,7 +114,8 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
           </div>
           <div className="inputbox">
             <input
-              type="text"
+              type="number"
+              pattern="[0-9]{9}"
               name="telefono"
               value={formData.telefono}
               onChange={handleInputChange}
@@ -111,9 +125,7 @@ export default function FormularioProveedores({ onClose, onSave, proveedor }) {
             <i></i>
           </div>
           <div className="button-container">
-            <button type="submit">
-              {proveedor ? 'Actualizar' : 'Guardar'}
-            </button>
+            <button type="submit">{cliente ? 'Actualizar' : 'Guardar'}</button>
             <button type="button" onClick={handleCancel}>
               Cancelar
             </button>
@@ -225,7 +237,6 @@ const ContainerForm = styled.div`
     color: #fff;
   }
 `;
-
 const Overlay = styled.div`
   /* Estilos para la capa semi-transparente */
   position: fixed;

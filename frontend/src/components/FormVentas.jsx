@@ -2,51 +2,42 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-export default function FormularioProductos({
+export default function FormularioVentas({
   onClose,
   onSave,
-  producto,
-  categorias,
+  venta,
+  productos,
 }) {
+  const [precioProducto, setPrecioProducto] = useState(0);
   const [formData, setFormData] = useState({
-    categoriaId: '',
-    categoria: '',
-    nombre: '',
-    descripcion: '',
-    precio: '',
-    stock: '',
-    fabricante: '',
+    fecha: '',
+    total: '',
+    idCliente: '',
+    idProducto: '',
+    productosSeleccionados: [],
   });
 
-  axios.defaults.withCredentials = true;
-
   useEffect(() => {
-    if (producto) {
-      setFormData(producto);
+    if (venta) {
+      setFormData(venta);
     } else {
       setFormData({
-        categoriaId: '',
-        categoria: '',
-        nombre: '',
-        descripcion: '',
-        precio: '',
-        stock: '',
-        fabricante: '',
+        total: '',
+        idCliente: '',
+        idProducto: '',
       });
     }
-  }, [producto]);
+  }, [venta]);
+
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    if (producto) {
+    if (venta) {
       axios
-        .put(
-          `http://localhost:3000/Productos/${producto.idProductos}`,
-          formData
-        )
+        .put(`http://localhost:3000/Ventas/${venta.idVenta}`, formData)
         .then((response) => {
           console.log(response.data);
           onClose();
@@ -57,7 +48,7 @@ export default function FormularioProductos({
         });
     } else {
       axios
-        .post('http://localhost:3000/Productos', formData)
+        .post('http://localhost:3000/Ventas', formData)
         .then((response) => {
           console.log(response.data);
           onClose();
@@ -70,33 +61,46 @@ export default function FormularioProductos({
   };
 
   const handleInputChange = (e) => {
-    if (e.target.name === 'categoria') {
-      const categoriaId = e.target.value;
-      const categoria = categorias.find(
-        (categoria) => categoria.idCategoria === categoriaId
+    const { name, value } = e.target;
+  
+    if (name === 'idProducto') {
+      const productoSeleccionado = productos.find(
+        (producto) => producto.idProducto === value
       );
+  
+      if (productoSeleccionado) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          idProducto: value,
+          precioUnitario: productoSeleccionado.precio,
+
+        }));
+        setPrecioProducto(productoSeleccionado.precio);
+      }
+    } else if (name === 'cantidadVendida') {
+      const cantidad = parseInt(value);
+      const total = cantidad * precioUnitario;
+  
       setFormData((prevFormData) => ({
         ...prevFormData,
-        categoriaId,
-        categoria,
+        [name]: cantidad,
+        TotalVenta: total,
       }));
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        [e.target.name]: e.target.value,
+        [name]: value,
       }));
     }
   };
+  
 
   const handleCancel = () => {
     setFormData({
-      categoriaId: '',
-      categoria: '',
-      nombre: '',
-      descripcion: '',
-      precio: '',
-      stock: '',
-      fabricante: '',
+      fecha: '',
+      total: '',
+      idCliente: '',
+      idProducto: '',
     });
     onClose();
     onSave();
@@ -105,48 +109,110 @@ export default function FormularioProductos({
   return (
     <>
       <Overlay />
-      <ProductForm>
-        <h2>{producto ? 'Editar Producto' : 'Añadir producto'}</h2>
+      <ContainerForm>
+        <h2>{venta ? 'Editar Venta' : 'Nueva Venta'}</h2>
         <form onSubmit={handleFormSubmit}>
+          <div className="inputbox">
+            <input
+              type="text"
+              name="idDetalleVenta"
+              value={formData.idDetalleVenta}
+              onChange={handleInputChange}
+              required
+            />
+            <span>Id Detalle Venta</span>
+            <i></i>
+          </div>
+          <div className="inputbox">
+            <input
+              type="text"
+              name="idVenta"
+              value={formData.idVenta}
+              onChange={handleInputChange}
+              required
+            />
+            <span>Id Venta</span>
+            <i></i>
+          </div>
+          <div className="inputbox">
+            <input
+              type="text"
+              name="NombreCliente"
+              value={formData.NombreCliente}
+              onChange={handleInputChange}
+              required
+            />
+            <span>Cliente</span>
+            <i></i>
+          </div>
+          <div className="inputbox">
+            <select
+              name="idProducto"
+              value={formData.idProducto}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Seleccione un producto</option>
+              {productos.map((producto) => (
+                <option key={producto.idProducto} value={producto.idProducto}>
+                  {producto.nombre}
+                </option>
+              ))}
+            </select>
+            <div>
+        <label>
+          Productos:
           <select
-            name="categoria"
-            value={formData.categoriaId} // Usa formData.categoriaId como valor del select
+            name="idProducto"
+            value={formData.idProducto}
             onChange={handleInputChange}
             required
           >
-            <option value="">Selecciona una categoría</option>
-            {categorias.map((categoria) => (
-              <option key={categoria.idCategoria} value={categoria.idCategoria}>
-                {categoria.nombrecategoria}
+            <option value="">Seleccione un producto</option>
+            {productos.map((producto) => (
+              <option key={producto.idProducto} value={producto.idProducto}>
+                {producto.nombre}
               </option>
             ))}
           </select>
+          <input
+            type="number"
+            name="cantidadVendida"
+            value={formData.cantidadVendida}
+            onChange={handleInputChange}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => handleAddProducto(formData.idProducto, formData.cantidadVendida)}
+          >
+            Agregar Producto
+          </button>
+        </label>
+        <ul>
+          {formData.productosSeleccionados.map((producto) => (
+            <li key={producto.idProducto}>
+              {producto.nombre} - Cantidad: {formData.cantidadVendida}
+            </li>
+          ))}
+        </ul>
+      </div>
+          </div>
           <div className="inputbox">
             <input
               type="text"
-              name="nombre"
-              value={formData.nombre}
+              name="cantidadVendida"
+              value={formData.cantidadVendida}
               onChange={handleInputChange}
               required
             />
-            <span>Nombre</span>
+            <span>Cantidad</span>
             <i></i>
           </div>
           <div className="inputbox">
             <input
               type="text"
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={handleInputChange}
-              required
-            />
-            <span>Decsripcicion</span>
-            <i></i>
-          </div>
-          <div className="inputbox">
-            <input
-              type="text"
-              name="precio"
+              name="precioUnitario"
               value={formData.precio}
               onChange={handleInputChange}
               required
@@ -156,43 +222,39 @@ export default function FormularioProductos({
           </div>
           <div className="inputbox">
             <input
-              type="text"
-              name="stock"
-              value={formData.stock}
+              type="datetime-local"
+              name="fecha"
+              value={formData.fecha}
               onChange={handleInputChange}
               required
             />
-            <span>Stock</span>
             <i></i>
           </div>
           <div className="inputbox">
             <input
               type="text"
-              name="fabricante"
-              value={formData.fabricante}
+              name="TotalVenta"
+              value={formData.TotalVenta}
               onChange={handleInputChange}
+              contentEditable="false"
               required
             />
-            <span>Fabricante</span>
+            <span>Total</span>
             <i></i>
           </div>
-          <div>
-            <div className="button-container">
-              <button type="submit">
-                {producto ? 'Actualizar' : 'Guardar'}
-              </button>
-              <button type="button" onClick={handleCancel}>
-                Cancelar
-              </button>
-            </div>
+          <div className="button-container">
+            <button type="submit">{venta ? 'Actualizar' : 'Guardar'}</button>
+            <button type="button" onClick={handleCancel}>
+              Cancelar
+            </button>
           </div>
         </form>
-      </ProductForm>
+      </ContainerForm>
     </>
   );
 }
 
-const ProductForm = styled.div`
+const ContainerForm = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
@@ -214,20 +276,9 @@ const ProductForm = styled.div`
     font-weight: 800;
     text-align: center;
   }
-  select {
-    width: 100%;
-    padding: 20px 10px 10px;
-    background: transparent;
-    box-shadow: none;
-    border: none;
-    color: #23242a;
-    
-    transition: 0.5s;
-    z-index: 10;
-  }
   .inputbox {
     position: relative;
-    width: 300px;
+    width: 196px;
     margin: 10px;
   }
   .inputbox input {

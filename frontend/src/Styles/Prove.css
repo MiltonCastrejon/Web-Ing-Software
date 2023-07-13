@@ -1,9 +1,9 @@
 .proveedores-container {
   overflow-x: auto;
-  max-height: 80vh;
+  max-height: 85vh;
   display: grid;
   place-items: center;
-  margin-top: 20px;
+  margin-top: 25px;
   position: relative;
 }
 
@@ -13,17 +13,24 @@
 
 .proveedores-table {
   width: 90%;
+  margin: 20px ;
+  border: 1px solid #bebebe;
+
   border-collapse: collapse;
+  box-shadow:  5px 5px 0px #bebebe,
+               -5px -5px 0px #ffffff;  
 }
 
 .proveedores-table th,
 .proveedores-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  padding: 8px; 
 }
 
 .proveedores-table th {
-  background-color: #05acff;
+  background-color: rgb(86, 157, 170);
+  margin: 0 10px;
+  border: black 2px solid;
+  color: white;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -38,11 +45,12 @@
 }
 
 .proveedores-table tbody tr:hover {
-  background-color: #eaeaea;
+  background-color: #cbcbcb;
 }
 
 .proveedores-table tbody td {
   text-align: center;
+ 
 }
 
 .add-button {
@@ -55,4 +63,24 @@
   background-color: #05acff;
   color: white;
   border: none;
+}.btn-container {
+  width: 20%;
+}
+.btn-editar, .btn-eliminar, .btn-descargar{
+  margin: 0 3%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  align-items: center;
+}
+.btn-editar {
+  background-color: #577D86;
+  color: white;
+}
+.btn-eliminar {
+  background-color: #ff0000;
+  color: white;
+}.btn-descargar{
+  background-color: #577D86;
+  color: white;
 }

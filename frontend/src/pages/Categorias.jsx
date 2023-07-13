@@ -1,33 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import axios from 'axios';
 import styled from 'styled-components';
-import FormularioProductos from '../components/FormProductos';
+import FormularioCategorias from '../components/FormCategorias';
 
-export default function Productos() {
-  const [productos, setProductos] = useState([]);
-  const [editProducto, setEditProducto] = useState(null);
+export default function Categorias() {
+  const [categorias, setCategorias] = useState([]);
+  const [editCategoria, setEditarCategoria] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [showScrollBar, setShowScrollBar] = useState(false);
-  const [categorias, setCategorias] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [productoToDelete, setProductoToDelete] = useState(null);
+  const [categoriaToDelete, setCategoriaToDelete] = useState(null);
 
   useEffect(() => {
-    fetchProductos();
     fetchCategorias();
   }, []);
-
-  const fetchProductos = () => {
-    axios
-      .get('http://localhost:3000/Productos')
-      .then((response) => {
-        setProductos(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   const fetchCategorias = () => {
     axios
@@ -40,16 +27,16 @@ export default function Productos() {
       });
   };
 
-  const handleEliminarProducto = (productoId) => {
-    setProductoToDelete(productoId);
+  const handleEliminarCategoria = (categoriaId) => {
+    setCategoriaToDelete(categoriaId);
     setShowConfirmation(true);
   };
 
   const handleConfirmDelete = () => {
     axios
-      .delete(`http://localhost:3000/Productos/${productoToDelete}`)
+      .delete(`http://localhost:3000/Categorias/${categoriaToDelete}`)
       .then((response) => {
-        fetchProductos();
+        fetchCategorias();
       })
       .catch((error) => {
         console.error(error);
@@ -61,14 +48,9 @@ export default function Productos() {
     setShowConfirmation(false);
   };
 
-  const handleEditarProducto = (producto) => {
-    setEditProducto(producto);
-    setShowForm(true);
-  };
-
   const handleOpenForm = () => {
-    setEditProducto(null);
     setShowForm(true);
+    setEditarCategoria(null);
   };
 
   const handleCloseForm = () => {
@@ -76,69 +58,49 @@ export default function Productos() {
   };
 
   const handleSaveForm = () => {
-    fetchProductos();
+    fetchCategorias();
     handleCloseForm();
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      const tableHeight =
-        document.getElementById('productos-table')?.offsetHeight;
-      const containerHeight = document.getElementById(
-        'productos-container'
-      )?.offsetHeight;
-      setShowScrollBar(tableHeight > containerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const handleEditarCategoria = (categoria) => {
+    setEditarCategoria(categoria);
+    setShowForm(true);
+  };
 
   return (
     <div>
-      <Header Title="PRODUCTOS" />
+      <Header Title="Categorias" />
       <button className="add-button" onClick={handleOpenForm}>
-        Nuevo Producto
+        Nueva Categoria
       </button>
-      <ProductsContainer
-        className={`productos-container ${showScrollBar ? 'scrollable' : ''}`}
+      <div
+        className={`proveedores-container ${showScrollBar ? 'scrollable' : ''}`}
       >
-        {productos.length > 0 ? (
-          <table className="proveedores-table" id="productos-table">
+        {Array.isArray(categorias) && categorias.length > 0 ? (
+          <table className="proveedores-table">
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Fabricante</th>
+                <th>Descripcion</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {productos.map((producto) => (
-                <tr key={producto.idProductos}>
-                  <td>{producto.nombre}</td>
-                  <td>{producto.descripcion}</td>
-                  <td>S/ {producto.precio}</td>
-                  <td>{producto.stock}</td>
-                  <td>{producto.fabricante}</td>
-
-                  <td>
+              {categorias.map((categoria) => (
+                <tr key={categoria.idCategoria}>
+                  <td>{categoria.nombrecategoria}</td>
+                  <td>{categoria.descripcionCategoria}</td>
+                  <td className="btn-container">
                     <button
                       className="btn-editar"
-                      onClick={() => handleEditarProducto(producto)}
+                      onClick={() => handleEditarCategoria(categoria)}
                     >
                       Editar
                     </button>
                     <button
                       className="btn-eliminar"
                       onClick={() =>
-                        handleEliminarProducto(producto.idProductos)
+                        handleEliminarCategoria(categoria.idCategoria)
                       }
                     >
                       Eliminar
@@ -149,24 +111,23 @@ export default function Productos() {
             </tbody>
           </table>
         ) : (
-          <p>No hay productos disponibles</p>
+          <p>No hay categorias disponibles</p>
         )}
-      </ProductsContainer>
+      </div>
 
       {showForm && (
         <div className="floating-form">
-          <FormularioProductos
+          <FormularioCategorias
+            categoria={editCategoria}
             onClose={handleCloseForm}
             onSave={handleSaveForm}
-            producto={editProducto}
-            categorias={categorias}
           />
         </div>
       )}
 
       {showConfirmation && (
         <ConfirmationDialogBox
-          message="¿Estás seguro de eliminar este producto?"
+          message="¿Estás seguro de eliminar esta categoría?"
           onCancel={handleCancelDelete}
           onConfirm={handleConfirmDelete}
         />
@@ -174,15 +135,7 @@ export default function Productos() {
     </div>
   );
 }
-const ProductsContainer = styled.div`
-  overflow-x: auto;
-  max-height: 85vh;
-  display: grid;
-  place-items: center;
-  margin-top: 25px;
-  position: relative;
-}
-`;
+
 const Overlay = styled.div`
   position: fixed;
   top: 0;
